@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusBoard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Wallpaper Layer -->
+  <div id="wallpaper" class="wallpaper"></div>
+  <div class="wallpaper-overlay"></div>
+
+  <!-- ===== ONBOARDING MODAL ===== -->
+  <div id="onboarding-modal" class="modal-backdrop hidden">
+    <div class="modal-card onboarding-card">
+      <div class="modal-brand">
+        <span class="brand-dot"></span>
+        <span class="brand-name">FocusBoard</span>
+      </div>
+      <h1 class="modal-title">Welcome. Let's get started.</h1>
+      <p class="modal-subtitle">What should we call you?</p>
+      <div class="input-group">
+        <input id="name-input" type="text" class="text-input" placeholder="Your first name…" maxlength="40" autocomplete="off" />
+        <button id="name-save-btn" class="btn btn-primary">Start →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SETTINGS PANEL (Phase 4) ===== -->
+  <div id="settings-overlay" class="settings-overlay hidden" role="dialog" aria-modal="true" aria-label="Settings">
+    <div id="settings-panel" class="settings-panel">
+
+      <div class="settings-header">
+        <h2 class="settings-title">Settings</h2>
+        <button id="settings-close-btn" class="icon-btn" aria-label="Close settings">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="settings-body">
+
+        <!-- Profile -->
+        <section class="settings-section">
+          <h3 class="settings-section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profile
+          </h3>
+          <div class="settings-field">
+            <label class="settings-label" for="settings-name-input">Your name</label>
+            <div class="input-group">
+              <input id="settings-name-input" type="text" class="text-input" placeholder="Your first name…" maxlength="40" autocomplete="off" />
+              <button id="settings-name-save" class="btn btn-primary">Save</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Appearance -->
+        <section class="settings-section">
+          <h3 class="settings-section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+            Appearance
+          </h3>
+          <div class="settings-field">
+            <label class="settings-label">Wallpaper</label>
+            <div class="settings-btn-row">
+              <label for="settings-wallpaper-input" class="btn btn-ghost settings-upload-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload image
+              </label>
+              <input id="settings-wallpaper-input" type="file" accept="image/*" class="hidden-file-input" />
+              <button id="settings-wallpaper-reset" class="btn btn-ghost">Restore default</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Focus Mode / Block List -->
+        <section class="settings-section">
+          <h3 class="settings-section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Blocked Websites
+          </h3>
+          <div class="settings-field">
+            <label class="settings-label">Add domain to block list</label>
+            <div class="input-group">
+              <input id="settings-domain-input" type="text" class="text-input" placeholder="e.g. reddit.com" autocomplete="off" />
+              <button id="settings-domain-add" class="btn btn-primary">Add</button>
+            </div>
+            <div id="settings-domain-list" class="settings-domain-list" role="list">
+              <!-- Domains rendered by JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- General / Reset -->
+        <section class="settings-section settings-section-danger">
+          <h3 class="settings-section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+            General
+          </h3>
+          <div class="settings-field">
+            <label class="settings-label">Danger zone</label>
+            <button id="settings-reset-all" class="btn btn-danger">Reset all data</button>
+            <p class="settings-hint">This will clear your name, focus, tasks, and all settings.</p>
+          </div>
+        </section>
+
+      </div><!-- /settings-body -->
+    </div><!-- /settings-panel -->
+  </div><!-- /settings-overlay -->
+
+  <!-- ===== MAIN DASHBOARD ===== -->
+  <main id="dashboard" class="dashboard hidden">
+
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <span class="brand-badge">
+          <span class="brand-dot small"></span>
+          FocusBoard
+        </span>
+      </div>
+      <div class="top-bar-right">
+        <!-- Focus Mode Toggle (Phase 3) -->
+        <div class="focus-mode-wrap">
+          <button id="focus-mode-btn" class="focus-mode-btn" aria-pressed="false" title="Toggle Focus Mode">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span class="focus-mode-label">Focus Mode</span>
+            <span class="focus-toggle-pill">
+              <span class="focus-toggle-thumb"></span>
+            </span>
+          </button>
+        </div>
+        <!-- Settings -->
+        <button id="settings-btn" class="icon-btn" title="Settings" aria-label="Open Settings">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Dashboard Body: two columns -->
+    <div class="dashboard-body">
+
+      <!-- LEFT COLUMN -->
+      <div class="left-col">
+        <section class="hero-section">
+          <div class="clock-wrapper">
+            <div id="clock-time" class="clock-time">00:00</div>
+            <div id="clock-date" class="clock-date">Tuesday, 29 April</div>
+          </div>
+          <h2 id="greeting-text" class="greeting-text">Good morning</h2>
+        </section>
+
+        <section id="focus-section" class="focus-section">
+          <div id="focus-input-state" class="focus-input-state hidden">
+            <p class="focus-prompt-label">What is your main focus today?</p>
+            <div class="focus-input-row">
+              <input id="focus-input" type="text" class="text-input focus-text-input" placeholder="Enter your main focus…" maxlength="120" autocomplete="off" />
+              <button id="focus-save-btn" class="btn btn-primary">Set Focus</button>
+            </div>
+          </div>
+          <div id="focus-display-state" class="focus-display-state hidden">
+            <p class="focus-label-small">TODAY'S FOCUS</p>
+            <p id="focus-display-text" class="focus-display-text"></p>
+            <button id="focus-edit-btn" class="btn btn-ghost btn-sm">Change focus</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN: Task Panel -->
+      <aside class="task-panel" id="task-panel" aria-label="Task list">
+        <div class="task-panel-header">
+          <h3 class="task-panel-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Tasks
+          </h3>
+          <span id="task-count-badge" class="task-count-badge hidden">0</span>
+        </div>
+        <div class="task-add-row">
+          <input id="task-input" type="text" class="text-input task-text-input" placeholder="Add a task… (Enter)" maxlength="200" autocomplete="off" />
+        </div>
+        <div id="task-list" class="task-list" role="list"></div>
+        <div id="task-empty-state" class="task-empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <p>No tasks yet.<br/>Add one above.</p>
+        </div>
+        <div id="task-footer" class="task-footer hidden">
+          <span id="task-completed-label" class="task-completed-label"></span>
+          <button id="clear-completed-btn" class="btn btn-ghost btn-sm">Clear done</button>
+        </div>
+      </aside>
+
+    </div><!-- /dashboard-body -->
+
+    <!-- Wallpaper Upload hint (bottom-left) -->
+    <div class="wallpaper-upload-hint">
+      <label for="wallpaper-input" class="icon-btn ghost-label" title="Change wallpaper">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>Wallpaper</span>
+      </label>
+      <input id="wallpaper-input" type="file" accept="image/*" class="hidden-file-input" />
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+

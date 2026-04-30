@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusBoard — Focus Mode Active</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+    /* ====== Reset ====== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #080816;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ====== Background gradient ====== */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(60, 80, 200, 0.18) 0%, transparent 70%),
+                  linear-gradient(160deg, #06060f 0%, #0b0b1e 60%, #070712 100%);
+    }
+
+    /* ====== Animated subtle orbs ====== */
+    .orb {
+      position: fixed; border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none;
+    }
+    .orb-1 { width: 500px; height: 500px; background: rgba(80,100,255,0.08); top: -150px; left: -100px; animation: drift1 18s ease-in-out infinite alternate; }
+    .orb-2 { width: 400px; height: 400px; background: rgba(120,60,255,0.07); bottom: -100px; right: -80px; animation: drift2 22s ease-in-out infinite alternate; }
+    @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(60px, 40px); } }
+    @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-50px, -30px); } }
+
+    /* ====== Main container ====== */
+    .container {
+      position: relative; z-index: 1;
+      width: 100%; height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0;
+      padding: 40px;
+      text-align: center;
+    }
+
+    /* ====== Brand ====== */
+    .brand {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 48px;
+    }
+    .brand-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: hsl(224,100%,70%);
+      box-shadow: 0 0 12px hsl(224,100%,70%);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 10px hsl(224,100%,70%); }
+      50%      { box-shadow: 0 0 20px hsl(224,100%,70%); opacity: 0.7; }
+    }
+
+    /* ====== Lock icon ====== */
+    .lock-icon {
+      width: 64px; height: 64px;
+      background: rgba(99,149,255,0.12);
+      border: 1px solid rgba(99,149,255,0.25);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 32px;
+      animation: fadeInDown 0.6s ease;
+    }
+
+    /* ====== Heading ====== */
+    .heading {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 400;
+      line-height: 1.25;
+      color: #fff;
+      margin-bottom: 16px;
+      animation: fadeInDown 0.7s ease;
+    }
+
+    .subheading {
+      font-size: 16px; font-weight: 400;
+      color: rgba(255,255,255,0.50);
+      line-height: 1.6;
+      max-width: 420px;
+      margin: 0 auto 40px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    /* ====== Focus display (from storage) ====== */
+    .focus-card {
+      background: rgba(99,149,255,0.08);
+      border: 1px solid rgba(99,149,255,0.20);
+      border-radius: 16px;
+      padding: 20px 32px;
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto 40px;
+      animation: fadeInUp 0.9s ease;
+      display: none; /* shown by JS if focus exists */
+    }
+    .focus-card-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      color: hsl(224,100%,70%); margin-bottom: 10px;
+    }
+    .focus-card-text {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(18px, 2vw, 24px);
+      color: #fff;
+      line-height: 1.4;
+    }
+
+    /* ====== Go back button ====== */
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.60);
+      border-radius: 12px;
+      padding: 10px 24px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 500;
+      cursor: pointer;
+      transition: all 150ms ease;
+      animation: fadeInUp 1s ease;
+      text-decoration: none;
+    }
+    .btn-back:hover {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border-color: rgba(255,255,255,0.30);
+    }
+
+    /* ====== Animations ====== */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="container">
+
+    <div class="brand">
+      <span class="brand-dot"></span>
+      FocusBoard
+    </div>
+
+    <div class="lock-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+        fill="none" stroke="hsl(224,100%,70%)" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+
+    <h1 class="heading">You're in Focus Mode.</h1>
+    <p class="subheading">This site is blocked while you focus.<br/>Return to what matters most.</p>
+
+    <!-- Today's focus from storage -->
+    <div id="focus-card" class="focus-card">
+      <p class="focus-card-label">Your focus today</p>
+      <p id="focus-card-text" class="focus-card-text"></p>
+    </div>
+
+    <a href="index.html" class="btn-back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Go back
+    </a>
+
+  </div>
+
+  <script>
+    // Read daily focus from storage and display it
+    (async () => {
+      try {
+        const data = await new Promise((resolve) =>
+          chrome.storage.local.get(['fb_focusDate', 'fb_focusText'], resolve)
+        );
+        const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+        if (data.fb_focusDate === today && data.fb_focusText) {
+          document.getElementById('focus-card').style.display = 'block';
+          document.getElementById('focus-card-text').textContent = data.fb_focusText;
+        }
+      } catch (e) {
+        // Storage not available (dev preview)
+      }
+    })();
+
+
+  </script>
+</body>
+</html>

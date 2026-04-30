@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "FocusBoard - Personal Productivity Dashboard",
+  "version": "1.0.0",
+  "description": "Replace your new tab with a calm, personal productivity dashboard. Stay focused, capture tasks, and avoid distractions.",
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
+  },
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "FocusBoard"
+  }
+}
